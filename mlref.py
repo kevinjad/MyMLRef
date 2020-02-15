@@ -1,6 +1,9 @@
 import pandas as pd
 import numpy as np
 import sklearn
+from sklearn import datasets
+from sklearn import svm
+from sklearn import metrics
 from sklearn import linear_model, preprocessing
 from sklearn.utils import shuffle
 from sklearn.neighbors import KNeighborsClassifier
@@ -58,39 +61,59 @@ from matplotlib import style
 # KNN
 #############################################
 
-df = pd.read_csv("car.data")
-print(df.head())
-# returns an label encoder object
-LE = preprocessing.LabelEncoder()
+# df = pd.read_csv("car.data")
+# print(df.head())
+# # returns an label encoder object
+# LE = preprocessing.LabelEncoder()
+#
+# #using that object to encode the values of cols
+# #the fit_transform thing returns a np array
+# buying = LE.fit_transform(list(df["buying"]))
+# maint = LE.fit_transform(list(df["maint"]))
+# door = LE.fit_transform(list(df["door"]))
+# persons = LE.fit_transform(list(df["persons"]))
+# lug_boot = LE.fit_transform(list(df["lug_boot"]))
+# safety = LE.fit_transform(list(df["safety"]))
+# cls = LE.fit_transform(list(df["class"]))
+#
+# #okay, so u can use xy as list or numpy array,but both data type should be same to use that train test split thing
+# X = list(zip(buying,maint,door,persons,lug_boot,safety))
+# Y = list(cls)
+# x_train, x_test, y_train,_y_test = sklearn.model_selection.train_test_split(X,Y,test_size=0.1)
+#
+# """best =0
+# for i in range(30):
+#     x_train, x_test, y_train,_y_test = sklearn.model_selection.train_test_split(X,Y,test_size=0.1)
+#     knn_model = KNeighborsClassifier(n_neighbors=9)
+#     knn_model.fit(x_train,y_train)
+#     acc = knn_model.score(x_test,_y_test)
+#     print(acc)
+#     if acc > best:
+#         best = acc
+#         with open("carknnmodel.pickle","wb") as f:
+#             pickle.dump(knn_model,f)"""
+#
+# pickle_in = open("carknnmodel.pickle","rb")
+# knn_model = pickle.load(pickle_in)
+# acc = knn_model.score(x_test,_y_test)
+# print(acc)
 
-#using that object to encode the values of cols
-#the fit_transform thing returns a np array
-buying = LE.fit_transform(list(df["buying"]))
-maint = LE.fit_transform(list(df["maint"]))
-door = LE.fit_transform(list(df["door"]))
-persons = LE.fit_transform(list(df["persons"]))
-lug_boot = LE.fit_transform(list(df["lug_boot"]))
-safety = LE.fit_transform(list(df["safety"]))
-cls = LE.fit_transform(list(df["class"]))
 
-#okay, so u can use xy as list or numpy array,but both data type should be same to use that train test split thing
-X = list(zip(buying,maint,door,persons,lug_boot,safety))
-Y = list(cls)
-x_train, x_test, y_train,_y_test = sklearn.model_selection.train_test_split(X,Y,test_size=0.1)
 
-"""best =0
-for i in range(30):
-    x_train, x_test, y_train,_y_test = sklearn.model_selection.train_test_split(X,Y,test_size=0.1)
-    knn_model = KNeighborsClassifier(n_neighbors=9)
-    knn_model.fit(x_train,y_train)
-    acc = knn_model.score(x_test,_y_test)
-    print(acc)
-    if acc > best:
-        best = acc
-        with open("carknnmodel.pickle","wb") as f:
-            pickle.dump(knn_model,f)"""
+########################################
+#SUPPORT VECTOR MACHINES
+########################################
 
-pickle_in = open("carknnmodel.pickle","rb")
-knn_model = pickle.load(pickle_in)
-acc = knn_model.score(x_test,_y_test)
+cancer_data_set = datasets.load_breast_cancer()
+X = cancer_data_set.data
+Y = cancer_data_set.target
+
+x_train,x_test,y_train,y_test = sklearn.model_selection.train_test_split(X,Y,test_size=0.2)
+#training
+svm_model = svm.SVC(kernel='linear',C=2)
+svm_model.fit(x_train,y_train)
+#prediction and accuracy
+
+predictions = svm_model.predict(x_test)
+acc = metrics.accuracy_score(y_test,predictions)
 print(acc)
